@@ -26,21 +26,15 @@ response_vector= list();
 fileNumbers=['000','001'] #,'002','003','004','005','006','007','008','009','010','011','012','013','014','015','016','018','019','020','021']
 tokenizer = RegexpTokenizer(r'\w+')
 body_tokens = []
-feature_matrix_sentences = list()
 feature_matrix_tokens = list()
-feature_matrix_count = list()
-aid = 0
 for index in fileNumbers:
     file_path='sgm_files/reut2-'+index+'.sgm'
     soup=BeautifulSoup(open(file_path), "html.parser")
     articles = soup.findAll('reuters')
 
     for curarticle in articles:
-        aid = aid + 1
-        
         scur = str(curarticle)
         if ('</dateline>' in scur):
-            tok_article = list()
             body_tokens = list()
             start_index = scur.index('</dateline>')
             body_text = scur[start_index+11:len(scur)-25]
@@ -59,10 +53,8 @@ for index in fileNumbers:
             body_text =''.join([i for i in body_text if not i.isdigit()])
             body_text = re.sub('[%s]' % re.escape(string.punctuation), '', body_text)
             
-            # append current article text and ID to the
-            feature_matrix_sentences.append((aid, body_text))
+            # add current tokens to the total corpus token list 
             body_tokens = tokenizer.tokenize(body_text)
-            tok_article.append(body_tokens)
             corpus_tokens = corpus_tokens + body_tokens #add current article's tokens to total corpus
             feature_matrix_tokens.append(body_tokens)
             
